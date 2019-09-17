@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=APP
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ APP\ here.\r\n\r\n\ @author\ (your\ name)\r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=logURL
+comment1.target=boolean\ log(java.lang.String)
+comment2.params=reading_response
+comment2.target=void\ logNote(java.lang.String)
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+numComments=4
