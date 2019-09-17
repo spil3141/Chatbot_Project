@@ -1,2 +1,5 @@
 # Chatbot_Project
-First Attack of a Chatbot 
+## Topics:
+1. Android Studio
+2. Django Framework (Backend)
+3. Deep Learning (RNN for Natural Language Processing)
