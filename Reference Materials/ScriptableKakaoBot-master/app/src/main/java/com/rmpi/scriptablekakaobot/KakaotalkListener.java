@@ -49,7 +49,7 @@ public class KakaotalkListener extends NotificationListenerService {
         }
     }
 
-    static void initializeScript() {
+    /*static void initializeScript() {
         try {
             File scriptDir = new File(Environment.getExternalStorageDirectory() + File.separator + "kbot");
             if (!scriptDir.exists())
@@ -70,11 +70,11 @@ public class KakaotalkListener extends NotificationListenerService {
             Process.killProcess(Process.myPid());
             return;
         }
-    }
+    }*/
 
     private void callResponder(String room, Object msg, Notification.Action session) {
-        if (responder == null || execScope == null)
-            initializeScript();
+        //if (responder == null || execScope == null)
+        //    initializeScript();
         Context parseContext = RhinoAndroidHelper.prepareContext();
         parseContext.setOptimizationLevel(-1);
         String sender;
@@ -89,14 +89,22 @@ public class KakaotalkListener extends NotificationListenerService {
             _msg = Html.fromHtml(html.split("</b>")[1].split("</p>")[0].substring(1)).toString();
         }
         try {
-            DjangoSpilbotConnector.displaySenderofMessage(getApplicationContext(),sender);
-            responder.call(parseContext, execScope, execScope, new Object[] { room, _msg, sender, msg instanceof SpannableString, new SessionCacheReplier(session) });
+            //DjangoSpilbotConnector.displaySenderofMessage(getApplicationContext(),sender);
+            Reply_To_Message(room, _msg, sender, msg instanceof SpannableString, new SessionCacheReplier(session));
+            //responder.call(parseContext, execScope, execScope, new Object[] { room, _msg, sender, msg instanceof SpannableString, new SessionCacheReplier(session) });
         } catch (Throwable e) {
             Log.e("parser", "?", e);
         }
 
         Context.exit();
     }
+
+    public void Reply_To_Message(String room, String msg, String sender, boolean isGroup, SessionCacheReplier replier){
+        if(sender.equals("박민규")){
+            replier.reply("Hi");
+        }
+    }
+
 
     public static class SessionCacheReplier {
         private Notification.Action session = null;

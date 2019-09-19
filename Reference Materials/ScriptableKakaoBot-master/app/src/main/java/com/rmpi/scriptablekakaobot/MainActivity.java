@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         grantPermission();
-        KakaotalkListener.initializeScript();
+        //KakaotalkListener.initializeScript();
         setContentView(R.layout.activity_main);
         Switch onOffSwitch = (Switch) findViewById(R.id.switch1);
         onOffSwitch.setChecked(getOn(this));
@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
     }
 
-    public void onReloadClick(View v) {
+    /*public void onReloadClick(View v) {
         KakaotalkListener.initializeScript();
-    }
+    }*/
 
     // Util
 
