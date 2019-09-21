@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Spil_bot</string>
+    <string name="btn_1">Button</string>
+    <string name="send_simple_http_request">Send Simple HTTP Request</string>
+    <string name="get_gps_permission">Get GPS Permission</string>
+    <string name="ResponseTextView">TextView</string>
 </resources>
