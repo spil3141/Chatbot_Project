@@ -23,11 +23,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
     Button btn;
     Button btn_2;
-    WebView myWebView = (WebView) findViewById(R.id.webview);
+//    WebView myWebView;
     //######################################################
     final AppCompatActivity thisActivaity = this;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         btn = findViewById(R.id.btn);
         btn_2 = findViewById(R.id.btn_2);
+//        myWebView  = (WebView) findViewById(R.id.webview);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +98,19 @@ public class MainActivity extends AppCompatActivity {
                         // result of the request.
                     }
                 }else{
-                    //final TextView textView = (TextView) findViewById(R.id.textView1);
+                    final TextView textView = (TextView) findViewById(R.id.textView);
 
 
                     // Instantiate the RequestQueue.
                     RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                    String url ="http://sitex.iptime.org";
+
+                    String q = "How are you today my love, :) ? ";
+                    String url = "http://spil3141.iptime.org/?q=";
+                    try{
+                        url += URLEncoder.encode(q, "UTF-8");
+                    }catch(Exception e){
+                        Toast.makeText(getApplicationContext(),"Error Encoding the URL",Toast.LENGTH_LONG).show();
+                    }
 
                     // Request a string response from the provided URL.
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -107,13 +118,14 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(String response) {
                                     // Display the first 500 characters of the response string.
-                                    //textView.setText("Response is: "+ response);
-                                    myWebView.loadData(response, "text/html", "UTF-8");
+                                    textView.setText("Response is: "+ response);
+//                                    myWebView.loadData(response, "text/html", "UTF-8");
                                 }
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            //textView.setText("That didn't work!");
+                            textView.setText("That didn't work!");
+//                            myWebView.loadUrl("http://www.google.com");
                         }
                     });
                     // Add the request to the RequestQueue.
@@ -123,4 +135,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 }
