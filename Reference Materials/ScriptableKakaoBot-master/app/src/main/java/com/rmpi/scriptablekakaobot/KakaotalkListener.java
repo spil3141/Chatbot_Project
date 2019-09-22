@@ -34,7 +34,6 @@ public class KakaotalkListener extends NotificationListenerService {
         if (!MainActivity.getOn(getApplicationContext())) return;
 
         //This can be used to get notification from other applications.
-        //Toast.makeText(getApplicationContext(),sbn.getPackageName(),Toast.LENGTH_LONG).show();
 
         if (sbn.getPackageName().equals("com.kakao.talk")) {
             Notification.WearableExtender wExt = new Notification.WearableExtender(sbn.getNotification());
@@ -46,6 +45,58 @@ public class KakaotalkListener extends NotificationListenerService {
                         execContext = getApplicationContext();
                         callResponder(sbn.getNotification().extras.getString("android.title"), sbn.getNotification().extras.get("android.text"), act);
                     }
+        }
+    }
+
+    private void callResponder(String room, Object msg, Notification.Action session) {
+        //if (responder == null || execScope == null)
+        //    initializeScript();
+        Context parseContext = RhinoAndroidHelper.prepareContext();
+        parseContext.setOptimizationLevel(-1);
+        String sender;
+        String _msg;
+
+        if (msg instanceof String) {
+            sender = room;
+            _msg = (String) msg;
+        } else {
+            String html = Html.toHtml((SpannableString) msg);
+            sender = Html.fromHtml(html.split("<b>")[1].split("</b>")[0]).toString();
+            _msg = Html.fromHtml(html.split("</b>")[1].split("</p>")[0].substring(1)).toString();
+        }
+        try {
+            Reply_To_Message(room, _msg, sender, msg instanceof SpannableString, new SessionCacheReplier(session));
+            //responder.call(parseContext, execScope, execScope, new Object[] { room, _msg, sender, msg instanceof SpannableString, new SessionCacheReplier(session) });
+        } catch (Throwable e) {
+            Log.e("parser", "?", e);
+        }
+
+        Context.exit();
+    }
+
+    public void Reply_To_Message(String room, String msg, String sender, boolean isGroup, SessionCacheReplier replier){
+        MainActivity.Send_To_Server(room,msg,sender,isGroup,replier);
+        }
+
+
+    public static class SessionCacheReplier {
+        private Notification.Action session = null;
+
+        private SessionCacheReplier(Notification.Action session) {
+            super();
+            this.session = session;
+        }
+
+        public void reply(String value) {
+            if (session == null) return;
+            Intent sendIntent = new Intent();
+            Bundle msg = new Bundle();
+            for (RemoteInput inputable : session.getRemoteInputs()) msg.putCharSequence(inputable.getResultKey(), value);
+            RemoteInput.addResultsToIntent(session.getRemoteInputs(), sendIntent, msg);
+            try {
+                session.actionIntent.send(execContext, 0, sendIntent);
+            } catch (PendingIntent.CanceledException e) {
+            }
         }
     }
 
@@ -72,59 +123,5 @@ public class KakaotalkListener extends NotificationListenerService {
         }
     }*/
 
-    private void callResponder(String room, Object msg, Notification.Action session) {
-        //if (responder == null || execScope == null)
-        //    initializeScript();
-        Context parseContext = RhinoAndroidHelper.prepareContext();
-        parseContext.setOptimizationLevel(-1);
-        String sender;
-        String _msg;
-
-        if (msg instanceof String) {
-            sender = room;
-            _msg = (String) msg;
-        } else {
-            String html = Html.toHtml((SpannableString) msg);
-            sender = Html.fromHtml(html.split("<b>")[1].split("</b>")[0]).toString();
-            _msg = Html.fromHtml(html.split("</b>")[1].split("</p>")[0].substring(1)).toString();
-        }
-        try {
-            //DjangoSpilbotConnector.displaySenderofMessage(getApplicationContext(),sender);
-            Reply_To_Message(room, _msg, sender, msg instanceof SpannableString, new SessionCacheReplier(session));
-            //responder.call(parseContext, execScope, execScope, new Object[] { room, _msg, sender, msg instanceof SpannableString, new SessionCacheReplier(session) });
-        } catch (Throwable e) {
-            Log.e("parser", "?", e);
-        }
-
-        Context.exit();
-    }
-
-    public void Reply_To_Message(String room, String msg, String sender, boolean isGroup, SessionCacheReplier replier){
-        if(sender.equals("박민규")){
-            replier.reply("Hi");
-        }
-    }
-
-
-    public static class SessionCacheReplier {
-        private Notification.Action session = null;
-
-        private SessionCacheReplier(Notification.Action session) {
-            super();
-            this.session = session;
-        }
-
-        public void reply(String value) {
-            if (session == null) return;
-            Intent sendIntent = new Intent();
-            Bundle msg = new Bundle();
-            for (RemoteInput inputable : session.getRemoteInputs()) msg.putCharSequence(inputable.getResultKey(), value);
-            RemoteInput.addResultsToIntent(session.getRemoteInputs(), sendIntent, msg);
-            try {
-                session.actionIntent.send(execContext, 0, sendIntent);
-            } catch (PendingIntent.CanceledException e) {
-            }
-        }
-    }
 
 }
