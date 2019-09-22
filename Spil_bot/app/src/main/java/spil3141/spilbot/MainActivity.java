@@ -5,13 +5,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,16 +20,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
-    Button btn;
-    Button btn_2;
-//    WebView myWebView;
+
     //######################################################
+    Button btn;
+    public EditText editText;
+    public TextView textView;
     final AppCompatActivity thisActivaity = this;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     //######################################################
@@ -42,39 +38,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btn = findViewById(R.id.btn);
-        btn_2 = findViewById(R.id.btn_2);
-//        myWebView  = (WebView) findViewById(R.id.webview);
+        btn = findViewById(R.id.btn_send);
+        editText = findViewById(R.id.editText);
+        textView  = (TextView) findViewById(R.id.textView);
+        editText.setHint("empty");
 
         btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // Permission is not granted
-                    // Should we show an explanation?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivaity,
-                            Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        // Show an explanation to the user *asynchronously* -- don't block
-                        // this thread waiting for the user's response! After the user
-                        // sees the explanation, try again to request the permission.
-                    } else {
-                        // No explanation needed; request the permission
-                        ActivityCompat.requestPermissions(thisActivaity,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                        // app-defined int constant. The callback method gets the
-                        // result of the request.
-                    }
-                }else{
-                    Toast.makeText(getApplicationContext(),"Permission is granted",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        btn_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Check if Internet Permission is granted
@@ -98,13 +67,11 @@ public class MainActivity extends AppCompatActivity {
                         // result of the request.
                     }
                 }else{
-                    final TextView textView = (TextView) findViewById(R.id.textView);
-
-
                     // Instantiate the RequestQueue.
                     RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-                    String q = "How are you today my love, :) ? ";
+//                    String q = "How are you today my love, :) ? ";
+                    String q = editText.getText().toString();
                     String url = "http://spil3141.iptime.org/?q=";
                     try{
                         url += URLEncoder.encode(q, "UTF-8");
@@ -119,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
                                 public void onResponse(String response) {
                                     // Display the first 500 characters of the response string.
                                     textView.setText("Response is: "+ response);
-//                                    myWebView.loadData(response, "text/html", "UTF-8");
                                 }
                             }, new Response.ErrorListener() {
                         @Override
